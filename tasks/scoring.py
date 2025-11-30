@@ -1,6 +1,10 @@
 from datetime import date, datetime
 import math
 from collections import defaultdict
+import holidays
+from datetime import timedelta
+
+HOLIDAY_COUNTRY = 'IN'
 
 DEFAULTS = {"importance": 5, "estimated_hours": 4}
 URGENCY_WINDOW_DAYS = 30.0
@@ -29,13 +33,32 @@ def normalize_effort(hours):
     h = max(0.0, float(hours))
     return 1.0 / (1.0 + math.log1p(h))
 
+def business_days_between(start_date, end_date, country=HOLIDAY_COUNTRY):
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+    day = start_date
+    count = 0
+    hols = holidays.CountryHoliday(country)
+    while day < end_date:
+        if day.weekday() < 5 and day not in hols:
+            count += 1
+        day += timedelta(days=1)
+    return count
+
 def normalize_urgency(due_date):
     if due_date is None:
         return 0.1
     days = (due_date - date.today()).days
+    # compute business days instead
+    try:
+        bdays = business_days_between(date.today(), due_date)
+    except Exception:
+        bdays = max(0, days)
     if days < 0:
-        return min(1.0 + min(1.0, -days / 30.0), 2.0)
-    return max(0.0, 1.0 - days / URGENCY_WINDOW_DAYS)
+        # overdue measured in business days
+        overdue_days = business_days_between(due_date, date.today())
+        return min(1.0 + min(1.0, overdue_days / 30.0), 2.0)
+    return max(0.0, 1.0 - (bdays / URGENCY_WINDOW_DAYS))
 
 def build_adj_map(tasks):
     adj = defaultdict(list)

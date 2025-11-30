@@ -1,4 +1,12 @@
-from django.test import TestCase
+# ...existing code...
+from tasks.learning import get_adjusted_weights
+# ...existing code...
+
+# inside compute_scores or wherever you pick weights:
+# strategy is the current strategy name, WEIGHT_PRESETS is your preset dict
+weights = get_adjusted_weights(strategy, WEIGHT_PRESETS.get(strategy, {}))
+# then use `weights` in scoring computations
+# ...existing code...from django.test import TestCase
 from .scoring import compute_scores, detect_cycles
 
 class ScoringTests(TestCase):

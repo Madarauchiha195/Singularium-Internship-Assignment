@@ -3,7 +3,8 @@ import axios from "axios";
 import Graph from "./Graph";
 import Eisenhower from "./Eisenhower";
 
-const API_BASE = "http://127.0.0.1:8001";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8001";
+
 
 const SAMPLE_TASKS = [
   {

@@ -1,21 +1,21 @@
 # Smart Task Analyzer
 
 ## Setup Instructions
-# 1. Clone repository
+ 1. Clone repository
 git clone <your repo url>
 cd project-folder
 
-# 2. Create virtual environment
+ 2. Create virtual environment
 python -m venv venv
 .\venv\Scripts\activate
 
-# 3. Install dependencies
+ 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run migrations
+ 4. Run migrations
 python manage.py migrate
 
-# 5. Start backend server
+ 5. Start backend server
 python manage.py runserver 127.0.0.1:8001
 
 
